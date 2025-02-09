@@ -45,9 +45,7 @@ GET /classify/{number}
  ],
 	"digit_sum": 10,	
 	"fun_fact": "307 is a non-palindrome with a palindromic square."
-      }
-    ]
-  }
+ }
 	              ```
 
 ### 2. Get Fun Facts About a Number
