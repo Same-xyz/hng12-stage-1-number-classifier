@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"math"
 	"net/http"
 	"strconv"
@@ -18,6 +18,7 @@ type NumberResponse struct {
 	DigitSum   int      `json:"digit_sum"`
 	FunFact    string   `json:"fun_fact"`
 	Error      bool     `json:"error,omitempty"`
+	Message    string   `json:"message,omitempty"`
 }
 
 func isPrime(n int) bool {
@@ -72,7 +73,7 @@ func getFunFact(number int) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
@@ -81,39 +82,45 @@ func getFunFact(number int) (string, error) {
 }
 
 func classifyNumberHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json") // Ensure JSON header is always set
+
 	// Get "number" query parameter
 	numberStr := r.URL.Query().Get("number")
 	if numberStr == "" {
-		http.Error(w, `{"error": true, "message": "Missing 'number' parameter"}`, http.StatusBadRequest)
+		json.NewEncoder(w).Encode(NumberResponse{
+			Error:   true,
+			Message: "Missing 'number' parameter",
+		})
 		return
 	}
 
 	number, err := strconv.Atoi(numberStr)
 	if err != nil {
-		http.Error(w, `{"message": "Alphabet,""error": true, }`, http.StatusBadRequest)
+		json.NewEncoder(w).Encode(NumberResponse{
+			Error:   true,
+			Message: "Invalid number format",
+		})
 		return
 	}
 
+	// Determine properties
 	properties := []string{}
 	if isArmstrong(number) {
-		if number%2 == 0 {
-			properties = append(properties, "armstrong", "even")
-		} else {
-			properties = append(properties, "armstrong", "odd")
-		}
+		properties = append(properties, "armstrong")
+	}
+	if number%2 == 0 {
+		properties = append(properties, "even")
 	} else {
-		if number%2 == 0 {
-			properties = append(properties, "even")
-		} else {
-			properties = append(properties, "odd")
-		}
+		properties = append(properties, "odd")
 	}
 
+	// Fetch fun fact
 	funFact, err := getFunFact(number)
 	if err != nil {
 		funFact = "Could not fetch fun fact."
 	}
 
+	// Prepare JSON response
 	response := NumberResponse{
 		Number:     number,
 		IsPrime:    isPrime(number),
@@ -123,11 +130,9 @@ func classifyNumberHandler(w http.ResponseWriter, r *http.Request) {
 		FunFact:    funFact,
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	jsonResponse, _ := json.MarshalIndent(response, "", "  ")
-	w.Write(jsonResponse)
+	// Encode and send JSON response
+	json.NewEncoder(w).Encode(response)
 }
-
 func main() {
 	http.HandleFunc("/api/classify-number", classifyNumberHandler)
 	fmt.Println("Server running on :8080...")
