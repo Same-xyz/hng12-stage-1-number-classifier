@@ -37,17 +37,17 @@ GET /classify/{number}
 **Response Example:**
 ```json
 {
-	  "number": 307,
-	    "is_prime": true,
-	      "is_perfect": false,
-	        "properties": [
-	        	    "odd"
-	        	      ],
-	        	        "digit_sum": 10,
-	        	          "fun_fact": "307 is a non-palindrome with a palindromic square."
-	        	          }
-           	        ]
-	              }
+	"number": 307,
+   "is_prime": true,
+   "is_perfect": false,
+   "properties": [
+    "odd"
+ ],
+	"digit_sum": 10,	
+	"fun_fact": "307 is a non-palindrome with a palindromic square."
+      }
+    ]
+  }
 	              ```
 
 ### 2. Get Fun Facts About a Number
@@ -66,12 +66,21 @@ GET /fun-fact/{number}
  ## Example Usage
  ### Using Curl
  ```sh
- curl http://localhost:8080/classify/28
+curl "https://your-service-name.onrender.com/api/classify-number?number=371"
  ```
 
- ### Using Postman
- 1. Open Postman and create a **GET** request to `http://localhost:8080/classify/28`.
- 2. Click **Send** to see the response.
+ ### Using Browser
+ You can acces the api on the browser as it is deployed in Render
+ And Since the API route is /api/classify-number, you can access it like this:
+- Open the url on your browser
+- https://hng12-stage-1-number-classifier.onrender.com/api/classify-number?number={number}
+ - For example
+ ```
+ 	https://hng12-stage-1-number-classifier.onrender.com/api/classify-number?number=371
+ ``` 
+ ### Using Postman or Thunder Client (VS Code Extension)
+ Make a GET request to the URL.
+ 
 
  ## Deployment
  You can deploy the API using Docker or host it on a cloud service like AWS, Heroku, or DigitalOcean.
