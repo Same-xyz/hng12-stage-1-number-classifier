@@ -87,6 +87,7 @@ func classifyNumberHandler(w http.ResponseWriter, r *http.Request) {
 	// Get "number" query parameter
 	numberStr := r.URL.Query().Get("number")
 	if numberStr == "" {
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(NumberResponse{
 			Error:   true,
 			Message: "Missing 'number' parameter",
@@ -96,6 +97,7 @@ func classifyNumberHandler(w http.ResponseWriter, r *http.Request) {
 
 	number, err := strconv.Atoi(numberStr)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(NumberResponse{
 			Error:   true,
 			Message: "Invalid number format",
