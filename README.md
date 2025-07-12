@@ -24,7 +24,6 @@ cd number-classifier
 ### Run the API
 ```sh
 go run main.go
-or run main.exe
 ```
 The API will start at `http://localhost:8080` by default.
 
@@ -46,7 +45,7 @@ GET /classify/{number}
 	"digit_sum": 10,	
 	"fun_fact": "307 is a non-palindrome with a palindromic square."
  }
-
+```
 ### 2. Get Fun Facts About a Number
 **Endpoint:**
 ```http
@@ -63,7 +62,9 @@ GET /fun-fact/{number}
  ## Example Usage
  ### Using Curl
  ```sh
-curl "https://your-service-name.onrender.com/api/classify-number?number=371"
+curl "http://localhost:8080/api/classify-number?number=[]"
+
+curl "http://localhost:8080/api/classify-number?number=371"
  ```
 
  ### Using Browser
